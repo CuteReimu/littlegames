@@ -1,0 +1,14 @@
+*.log
+.env.local
+.env.prod
+.idea/
+.vscode/
+*.ipynb
+venv/
+.venv/
+__pycache__/
+/dist/
+/logs/
+/littlegames.egg-info/
+
+build/
