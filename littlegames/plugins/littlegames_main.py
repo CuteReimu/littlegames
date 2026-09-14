@@ -13,7 +13,7 @@ logger.opt(colors=True).info("<green>✅ littlegames_main 插件加载成功！<
 fanfan_games: dict[str, FanFan] = {}
 
 # ---- 象棋翻翻棋 ----
-_fanfan_start_cmd = on_command("象棋翻翻棋", force_whitespace=True, priority=10, block=True)
+_fanfan_start_cmd = on_command("象棋翻翻棋", priority=10, block=True)
 
 
 @_fanfan_start_cmd.handle()
@@ -49,7 +49,7 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
 
 
 # ---- 象棋翻翻棋-翻开 ----
-_fanfan_fan_cmd = on_command("翻开", force_whitespace=True, priority=10, block=True)
+_fanfan_fan_cmd = on_command("翻开", priority=10, block=True)
 
 
 @_fanfan_fan_cmd.handle()
@@ -62,8 +62,7 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     if uid != game.current_player():
         await _fanfan_fan_cmd.finish(f"现在轮到对方行动")
         return
-    content: str = args.extract_plain_text().strip()
-    arr = content.split(" ")
+    arr: str = args.extract_plain_text().strip().replace(" ", "")
     if len(arr) < 2:
         await _fanfan_fan_cmd.finish("命令格式：\n/翻开 行号 列号")
         return
@@ -91,7 +90,7 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     await _fanfan_fan_cmd.finish(MessageSegment.markdown(result))
 
 
-_fanfan_move_cmd = on_command("移动", force_whitespace=True, priority=10, block=True)
+_fanfan_move_cmd = on_command("移动", priority=10, block=True)
 
 _fanfan_move_format = "命令格式：\n/移动 起始行号 起始列号 上/下/左/右\n/移动 起始行号 起始列号 到 目标行号 目标列号"
 
@@ -106,8 +105,7 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     if uid != game.current_player():
         await _fanfan_move_cmd.finish(f"现在轮到对方行动")
         return
-    content: str = args.extract_plain_text().strip()
-    arr = content.split(" ")
+    arr: str = args.extract_plain_text().strip().replace(" ", "")
     if len(arr) < 3:
         await _fanfan_move_cmd.finish(_fanfan_move_format)
         return
