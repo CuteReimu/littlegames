@@ -43,12 +43,15 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     game = fanfan_games.get(uid)
     if game is None:
         await _fanfan_fan_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
+        return
     if uid != game.current_player():
         await _fanfan_fan_cmd.finish(f"现在轮到对方行动")
+        return
     content: str = args.extract_plain_text().strip()
     arr = content.split(" ")
     if len(arr) < 2:
         await _fanfan_fan_cmd.finish("命令格式：\n/翻开 行号 列号")
+        return
     try:
         x = int(arr[0]) - 1
         y = int(arr[1]) - 1
@@ -57,9 +60,11 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
         return
     if not (0 <= x < 4 and 0 <= y < 8):
         await _fanfan_fan_cmd.finish("坐标超出范围，请提供一个有效的位置")
+        return
     result = game.fan(uid, x, y)
     if not result.startswith("翻开了"):
         await _fanfan_fan_cmd.finish(result)
+        return
     result += "。当前盘面：\n\n---\n\n" + game.display_board()
     await _fanfan_fan_cmd.finish(MessageSegment.markdown(result))
 
@@ -75,12 +80,15 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     game = fanfan_games.get(uid)
     if game is None:
         await _fanfan_move_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
+        return
     if uid != game.current_player():
         await _fanfan_move_cmd.finish(f"现在轮到对方行动")
+        return
     content: str = args.extract_plain_text().strip()
     arr = content.split(" ")
     if len(arr) < 3:
         await _fanfan_move_cmd.finish(_fanfan_move_format)
+        return
     try:
         x1 = int(arr[0]) - 1
         y1 = int(arr[1]) - 1
