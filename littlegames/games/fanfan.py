@@ -72,7 +72,7 @@ class FanFan:
             return "该棋子已经被翻开"
         self.board[x][y] = (color, piece_type, True)
         self.turn = 1 - self.turn
-        return f"翻开了 {('红', '黑')[color]}{_piece_names[piece_type][color]}"
+        return f"翻开了 {('红', '蓝')[color]}{_piece_names[piece_type][color]}"
 
     def move(self, uid: str, x1: int, y1: int, x2: int, y2: int) -> str:
         if uid not in (self.uid1, self.uid2):
@@ -105,7 +105,7 @@ class FanFan:
                     return "炮吃子时必须隔一个棋子"
         elif abs(x1 - x2) + abs(y1 - y2) != 1:
             return "只能移动到相邻的空格"
-        msg = f"{('红', '黑')[color_from]}{_piece_names[type_from][color_from]} 移动了"
+        msg = f"{('红', '蓝')[color_from]}{_piece_names[type_from][color_from]} 移动了"
         # 检查是否可以吃掉目标棋子
         if piece_to is not None:
             color_to, type_to, _ = piece_to
@@ -122,7 +122,7 @@ class FanFan:
                 msg += f"，{_piece_names[type_from][color_from]}与{_piece_names[type_to][color_to]}同归于尽"
                 return msg
             else:
-                msg += f"，吃掉了 {('红', '黑')[color_to]}{_piece_names[type_to][color_to]}"
+                msg += f"，吃掉了 {('红', '蓝')[color_to]}{_piece_names[type_to][color_to]}"
         # 移动棋子
         self.board[x2][y2] = piece_from
         self.board[x1][y1] = None

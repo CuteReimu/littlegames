@@ -37,7 +37,9 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     fanfan_games[uid1] = game
     fanfan_games[uid2] = game
     ret = f"游戏开始！\n"
-    ret += f"红方（用**粗体**表示）：{at_user(uid1)}\n黑方（用*斜体*表示）：{at_user(uid2)}\n由红方先行\n\n你可以输入：\n"
+    ret += f"红方：{at_user(uid1)}\n蓝方：{at_user(uid2)}\n由红方先行\n"
+    ret += "将＞士＞象＞车＞马＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）\n"
+    ret += "\n\n你可以输入：\n"
     ret += f"- {input_link("翻开")} 行号 列号\n"
     ret += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     ret += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
@@ -78,7 +80,8 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     if not result.startswith("翻开了"):
         await _fanfan_fan_cmd.finish(result)
         return
-    result += f"\n轮到{at_user(game.current_player())}行动"
+    result += f"\n轮到{at_user(game.current_player())}行动\n"
+    result += "将＞士＞象＞车＞马＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）"
     result += "\n你可以输入：\n"
     result += f"- {input_link("翻开")} 行号 列号\n"
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
@@ -136,7 +139,8 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     result = game.move(uid, x1, y1, x2, y2)
     if "移动了" not in result:
         await _fanfan_move_cmd.finish(result)
-    result += f"\n轮到{at_user(game.current_player())}行动"
+    result += f"\n轮到{at_user(game.current_player())}行动\n"
+    result += "将＞士＞象＞车＞马＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）"
     result += "\n你可以输入：\n"
     result += f"- {input_link("翻开")} 行号 列号\n"
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
