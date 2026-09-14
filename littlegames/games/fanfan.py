@@ -44,7 +44,7 @@ class FanFan:
             display_row = []
             for col in row:
                 if col is None:
-                    display_row.append("　")
+                    display_row.append("□")
                     continue
                 color, piece, revealed = col
                 if revealed:
@@ -54,7 +54,7 @@ class FanFan:
                     display_row.append(r"$\textcolor{" + color_name + "}{" + _piece_names[piece][color] + "}$")
                 else:
                     display_row.append("■")
-            display.append("□".join(display_row))
+            display.append(" ".join(display_row))
         return "\n".join(display)
 
     def fan(self, uid: str, x: int, y: int) -> str:
