@@ -32,7 +32,7 @@ class FanFan:
 
     @staticmethod
     def _init_board():
-        chess: list[int] = [_将, _士, _士, _象, _象, _车, _马, _车, _马, _炮, _炮, _兵, _兵, _兵, _兵, _兵]
+        chess: list[int] = [_将, _士, _士, _象, _象, _马, _马, _车, _车, _炮, _炮, _兵, _兵, _兵, _兵, _兵]
         chess_pieces: list[tuple[int, int, bool] | None] = \
             [(color, piece, False) for color in (0, 1) for piece in chess]
         random.shuffle(chess_pieces)
