@@ -6,6 +6,7 @@ from nonebot.log import logger
 from nonebot.params import CommandArg
 
 from ..games.fanfan import FanFan
+from ..utils import at_user, input_link
 
 logger.opt(colors=True).info("<green>✅ littlegames_main 插件加载成功！</green>")
 
@@ -23,13 +24,19 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
             uid2 = arg.data["user_id"]
             break
     if uid2 is None:
-        uid2 = event.get_user_id()
-        # await _fanfan_start_cmd.finish("命令格式：\n/象棋翻翻棋 @对手")
+        await _fanfan_start_cmd.finish("命令格式：\n/象棋翻翻棋 @对手")
+        return
     uid1 = event.get_user_id()
     game = FanFan(uid1, uid2)
     fanfan_games[uid1] = game
     fanfan_games[uid2] = game
-    ret = f"游戏开始！\n{game.display_board()}"
+    ret = f"游戏开始！\n"
+    ret += f"红方（用**粗体**表示）：{at_user(uid1)}\n黑方（用*斜体*表示）：{at_user(uid2)}\n由红方先行\n\n你可以输入："
+    ret += f"- {input_link("翻开")} 行号 列号\n"
+    ret += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
+    ret += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
+    ret += "\n当前盘面：\n\n---\n\n"
+    ret += game.display_board()
     await _fanfan_start_cmd.finish(MessageSegment.markdown(ret))
 
 
@@ -65,7 +72,12 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     if not result.startswith("翻开了"):
         await _fanfan_fan_cmd.finish(result)
         return
-    result += "。当前盘面：\n\n---\n\n" + game.display_board()
+    result += f"\n轮到{at_user(game.current_player())}行动"
+    result += "\n你可以输入："
+    result += f"- {input_link("翻开")} 行号 列号\n"
+    result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
+    result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
+    result += "\n当前盘面：\n\n---\n\n" + game.display_board()
     await _fanfan_fan_cmd.finish(MessageSegment.markdown(result))
 
 
@@ -118,5 +130,25 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     result = game.move(uid, x1, y1, x2, y2)
     if "移动了" not in result:
         await _fanfan_move_cmd.finish(result)
-    result += "。当前盘面：\n\n---\n\n" + game.display_board()
+    result += f"\n轮到{at_user(game.current_player())}行动"
+    result += "\n你可以输入："
+    result += f"- {input_link("翻开")} 行号 列号\n"
+    result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
+    result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
+    result += "\n当前盘面：\n\n---\n\n" + game.display_board()
     await _fanfan_move_cmd.finish(MessageSegment.markdown(result))
+
+
+__fanfan_end_cmd = on_command("结束游戏", force_whitespace=True, priority=10, block=True)
+
+
+@__fanfan_end_cmd.handle()
+async def _handle_fanfan_end(event: Event):
+    uid = event.get_user_id()
+    game = fanfan_games.get(uid)
+    if game is None:
+        await __fanfan_end_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
+        return
+    del fanfan_games[game.uid1]
+    del fanfan_games[game.uid2]
+    await __fanfan_end_cmd.finish("游戏已结束")

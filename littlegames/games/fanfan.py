@@ -53,7 +53,7 @@ class FanFan:
                     # color_name = "red" if color == 0 else "blue"
                     # display_row.append(r"$\textcolor{" + color_name + "}{" + _piece_names[piece][color] + "}$")
                 else:
-                    display_row.append("暗")
+                    display_row.append("■")
             display.append(" ".join(display_row))
         return "\n".join(display)
 
