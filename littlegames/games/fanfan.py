@@ -139,3 +139,15 @@ class FanFan:
         if type_from == _将 and type_to == _兵:
             return -1
         return type_from - type_to
+
+    # 检查游戏是否结束，返回0表示未结束，1表示uid1获胜，2表示uid2获胜
+    def check_game_over(self) -> str:
+        red_pieces = sum(1 for row in self.board for col in row if col is not None and col[0] == 0)
+        blue_pieces = sum(1 for row in self.board for col in row if col is not None and col[0] == 1)
+        if red_pieces == 0 and blue_pieces == 0:
+            return "\n\n游戏结束，平局"
+        if red_pieces == 0:
+            return "\n\n游戏结束，蓝方获胜"
+        if blue_pieces == 0:
+            return "\n\n游戏结束，红方获胜"
+        return ""

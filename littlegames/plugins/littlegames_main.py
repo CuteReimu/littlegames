@@ -45,6 +45,7 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     ret += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
     ret += "\n当前盘面：\n\n---\n\n"
     ret += game.display_board()
+    result += game.check_game_over()
     await _fanfan_start_cmd.finish(MessageSegment.markdown(ret))
 
 
@@ -87,6 +88,7 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
     result += "\n当前盘面：\n\n---\n\n" + game.display_board()
+    result += game.check_game_over()
     await _fanfan_fan_cmd.finish(MessageSegment.markdown(result))
 
 
@@ -146,6 +148,7 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
     result += "\n当前盘面：\n\n---\n\n" + game.display_board()
+    result += game.check_game_over()
     await _fanfan_move_cmd.finish(MessageSegment.markdown(result))
 
 
