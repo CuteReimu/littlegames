@@ -134,4 +134,8 @@ class FanFan:
     def _can_capture(type_from: int, type_to: int) -> int:
         if type_from == _炮:  # 炮的隔子吃法，可以吃掉任何棋子
             return 1
+        if type_from == _兵 and type_to == _将:
+            return 1
+        if type_from == _将 and type_to == _兵:
+            return -1
         return type_from - type_to
