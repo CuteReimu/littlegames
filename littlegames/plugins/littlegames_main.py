@@ -27,6 +27,12 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
         await _fanfan_start_cmd.finish("命令格式：\n/象棋翻翻棋 @对手")
         return
     uid1 = event.get_user_id()
+    if uid1 == uid2:
+        await _fanfan_start_cmd.finish("你不能和自己玩")
+        return
+    if uid1 in fanfan_games or uid2 in fanfan_games:
+        await _fanfan_start_cmd.finish("你或对手已经在游戏中，请先结束当前游戏")
+        return
     game = FanFan(uid1, uid2)
     fanfan_games[uid1] = game
     fanfan_games[uid2] = game

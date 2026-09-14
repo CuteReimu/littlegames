@@ -32,7 +32,7 @@ class FanFan:
 
     @staticmethod
     def _init_board():
-        chess: list[int] = [_将, _士, _士, _象, _象, _车, _马, _车, _马, _炮, _炮, _兵, _兵, _兵, _兵, _兵] * 2
+        chess: list[int] = [_将, _士, _士, _象, _象, _车, _马, _车, _马, _炮, _炮, _兵, _兵, _兵, _兵, _兵]
         chess_pieces: list[tuple[int, int, bool] | None] = \
             [(color, piece, False) for color in (0, 1) for piece in chess]
         random.shuffle(chess_pieces)
@@ -48,10 +48,10 @@ class FanFan:
                     continue
                 color, piece, revealed = col
                 if revealed:
-                    color_name = "**" if color == 0 else "*"
-                    display_row.append(f"{color_name}{_piece_names[piece][color]}{color_name}")
-                    # color_name = "red" if color == 0 else "blue"
-                    # display_row.append(r"$\textcolor{" + color_name + "}{" + _piece_names[piece][color] + "}$")
+                    # color_name = "**" if color == 0 else "*"
+                    # display_row.append(f"{color_name}{_piece_names[piece][color]}{color_name}")
+                    color_name = "red" if color == 0 else "blue"
+                    display_row.append(r"$\textcolor{" + color_name + "}{" + _piece_names[piece][color] + "}$")
                 else:
                     display_row.append("■")
             display.append(" ".join(display_row))
@@ -119,7 +119,7 @@ class FanFan:
                 self.board[x2][y2] = None
                 self.board[x1][y1] = None
                 self.turn = 1 - self.turn
-                msg += f"{_piece_names[type_from][color_from]}与{_piece_names[type_to][color_to]}同归于尽"
+                msg += f"，{_piece_names[type_from][color_from]}与{_piece_names[type_to][color_to]}同归于尽"
                 return msg
             else:
                 msg += f"，吃掉了 {('红', '黑')[color_to]}{_piece_names[type_to][color_to]}"
