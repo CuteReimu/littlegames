@@ -45,7 +45,6 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     ret += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
     ret += "\n当前盘面：\n\n---\n\n"
     ret += game.display_board()
-    result += game.check_game_over()
     await _fanfan_start_cmd.finish(MessageSegment.markdown(ret))
 
 
