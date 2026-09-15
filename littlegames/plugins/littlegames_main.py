@@ -1,7 +1,7 @@
 """littlegames 主插件 - NoneBot2 命令路由"""
 from nonebot import on_command
 from nonebot.adapters import Event
-from nonebot.adapters.qq.message import MessageSegment, MentionUser
+from nonebot.adapters.qq.message import Message, MessageSegment, MentionUser
 from nonebot.log import logger
 from nonebot.params import CommandArg
 
@@ -43,9 +43,11 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     ret += f"- {input_link("翻开")} 行号 列号\n"
     ret += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     ret += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
-    ret += "\n当前盘面：\n\n---\n\n"
-    ret += game.display_board()
-    await _fanfan_start_cmd.finish(MessageSegment.markdown(ret))
+    ret += "\n当前盘面："
+    msg = Message()
+    msg += MessageSegment.markdown(ret)
+    msg += MessageSegment.file_image(game.display_board())
+    await _fanfan_start_cmd.finish(msg)
 
 
 # ---- 象棋翻翻棋-翻开 ----
@@ -85,9 +87,11 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
     result += f"- {input_link("翻开")} 行号 列号\n"
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
-    result += "\n当前盘面：\n\n---\n\n" + game.display_board()
-    result += game.check_game_over()
-    await _fanfan_fan_cmd.finish(MessageSegment.markdown(result))
+    result += "\n当前盘面："
+    msg = Message()
+    msg += MessageSegment.markdown(result)
+    msg += MessageSegment.file_image(game.display_board())
+    await _fanfan_fan_cmd.finish(msg)
 
 
 _fanfan_move_cmd = on_command("移动", priority=10, block=True)
@@ -145,8 +149,10 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
     result += f"- {input_link("移动")} 行号 列号 到 行号 列号\n"
     result += "\n当前盘面：\n\n---\n\n" + game.display_board()
-    result += game.check_game_over()
-    await _fanfan_move_cmd.finish(MessageSegment.markdown(result))
+    msg = Message()
+    msg += MessageSegment.markdown(result)
+    msg += MessageSegment.file_image(game.display_board())
+    await _fanfan_move_cmd.finish(msg)
 
 
 __fanfan_end_cmd = on_command("结束游戏", force_whitespace=True, priority=10, block=True)

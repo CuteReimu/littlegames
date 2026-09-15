@@ -1,5 +1,10 @@
 # 象棋翻翻棋
+import io
+import os
 import random
+import sys
+
+from PIL import Image, ImageDraw, ImageFont
 
 _将 = 10
 _士 = 9
@@ -18,6 +23,26 @@ _piece_names = {
     _炮: ("炮", "砲"),
     _兵: ("兵", "卒"),
 }
+
+_FONT_DIRS = {
+    "darwin": "/Library/Fonts/",
+    "linux": "/usr/share/fonts/",
+    "win32": "C:\\Windows\\Fonts\\",
+}
+_font_dir = _FONT_DIRS.get(sys.platform, "")
+_font_path = ""
+if _font_dir and os.path.isdir(_font_dir):
+    for _root, _, _files in os.walk(_font_dir):
+        for _filename in _files:
+            if _filename.lower() == "simhei.ttf":
+                _font_path = os.path.join(_root, _filename)
+                break
+        if _font_path:
+            break
+if not _font_path:
+    raise FileNotFoundError(f"找不到 SimHei 字体文件: {_font_dir or sys.platform}")
+
+_font = ImageFont.truetype(_font_path, 50)
 
 
 class FanFan:
@@ -38,24 +63,49 @@ class FanFan:
         random.shuffle(chess_pieces)
         return [chess_pieces[i:i + 8] for i in range(0, 32, 8)]
 
-    def display_board(self) -> str:
-        display = []
-        for row in self.board:
-            display_row = []
-            for col in row:
+    def display_board(self) -> bytes:
+        """将当前棋盘绘制成 PNG，并返回 PNG 的二进制内容。"""
+
+        # 调整这个值即可等比例调整棋盘大小；例如 64、96、128。
+        cell_size = 96
+        line_width = max(2, cell_size // 24)
+        image = Image.new("RGB", (8 * cell_size, 4 * cell_size), "#f5e6c8")
+        draw = ImageDraw.Draw(image)
+
+        font = _font.font_variant(size=int(cell_size * 0.52))
+
+        for x, row in enumerate(self.board):
+            for y, col in enumerate(row):
+                left, top = y * cell_size, x * cell_size
+                right, bottom = left + cell_size, top + cell_size
                 if col is None:
-                    display_row.append("□")
-                    continue
-                color, piece, revealed = col
-                if revealed:
-                    # color_name = "**" if color == 0 else "*"
-                    # display_row.append(f"{color_name}{_piece_names[piece][color]}{color_name}")
-                    color_name = "red" if color == 0 else "blue"
-                    display_row.append(r"$\textcolor{" + color_name + "}{" + _piece_names[piece][color] + "}$")
+                    fill = "#ead8b5"
+                elif not col[2]:
+                    fill = "#315b7d"
                 else:
-                    display_row.append("■")
-            display.append(" ".join(display_row))
-        return "\n".join(display)
+                    fill = "#fffaf0"
+                draw.rectangle((left, top, right, bottom), fill=fill,
+                               outline="#4b3621", width=line_width)
+
+                if col is None:
+                    continue
+                if not col[2]:
+                    draw.rectangle(
+                        (left + cell_size // 6, top + cell_size // 6,
+                         right - cell_size // 6, bottom - cell_size // 6),
+                        outline="#d9c18c", width=line_width,
+                    )
+                    continue
+
+                color, piece, _ = col
+                text = _piece_names[piece][color]
+                text_color = "#c62828" if color == 0 else "#1565c0"
+                draw.text((left + cell_size / 2, top + cell_size / 2), text,
+                          font=font, fill=text_color, anchor="mm")
+
+        output = io.BytesIO()
+        image.save(output, format="PNG")
+        return output.getvalue()
 
     def fan(self, uid: str, x: int, y: int) -> str:
         if uid not in (self.uid1, self.uid2):
