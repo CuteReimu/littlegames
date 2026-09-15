@@ -1,7 +1,7 @@
 """littlegames 主插件 - NoneBot2 命令路由"""
 from nonebot import on_command
 from nonebot.adapters import Event
-from nonebot.adapters.qq.message import Message, MessageSegment, MentionUser
+from nonebot.adapters.qq.message import MessageSegment, MentionUser
 from nonebot.log import logger
 from nonebot.params import CommandArg
 

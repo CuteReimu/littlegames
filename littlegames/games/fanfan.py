@@ -135,11 +135,11 @@ class FanFan:
         piece_to = self.board[x2][y2]
         if piece_from is None or not piece_from[2]:
             return "起始位置没有翻开的棋子"
-        if piece_to is not None and not piece_to[2]:
-            return "目标位置的棋子未翻开"
         color_from, type_from, _ = piece_from
         if color_from != self.turn:
             return "只能移动自己的棋子"
+        if piece_to is not None and not piece_to[2]:
+            return "目标位置的棋子未翻开"
         if type_from == _炮:  # 炮的特殊吃法
             if piece_to is None:
                 if abs(x1 - x2) + abs(y1 - y2) != 1:
