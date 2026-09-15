@@ -49,7 +49,7 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     fanfan_games[uid2] = game
     ret = f"游戏开始！\n"
     ret += f"红方：{at_user(uid1)}\n蓝方：{at_user(uid2)}\n由红方先行\n"
-    ret += "将＞士＞象＞马＞车＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）"
+    ret += "将＞士＞象＞马＞车＞炮＞兵，但兵＞将，炮只能隔子吃（隔子吃无视大小）"
     ret += "\n你可以输入：\n"
     ret += f"- {input_link("翻开")} 行号 列号\n"
     ret += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
@@ -91,7 +91,7 @@ async def _handle_fanfan_fan(event: Event, args=CommandArg()):
         await _fanfan_fan_cmd.finish(result)
         return
     result += f"\n轮到{at_user(game.current_player())}行动\n"
-    result += "将＞士＞象＞马＞车＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）"
+    result += "将＞士＞象＞马＞车＞炮＞兵，但兵＞将，炮只能隔子吃（隔子吃无视大小）"
     result += "\n你可以输入：\n"
     result += f"- {input_link("翻开")} 行号 列号\n"
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
@@ -150,7 +150,7 @@ async def _handle_fanfan_move(event: Event, args=CommandArg()):
     if "移动了" not in result:
         await _fanfan_move_cmd.finish(result)
     result += f"\n轮到{at_user(game.current_player())}行动\n"
-    result += "将＞士＞象＞马＞车＞炮＞兵，但兵能吃将，炮只能隔子吃（隔子吃无视大小）"
+    result += "将＞士＞象＞马＞车＞炮＞兵，但兵＞将，炮只能隔子吃（隔子吃无视大小）"
     result += "\n你可以输入：\n"
     result += f"- {input_link("翻开")} 行号 列号\n"
     result += f"- {input_link("移动")} 行号 列号 上/下/左/右\n"
