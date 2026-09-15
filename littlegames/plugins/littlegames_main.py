@@ -2,6 +2,7 @@
 from nonebot import on_command
 from nonebot.adapters import Event
 from nonebot.adapters.qq.message import MessageSegment, MentionUser
+from nonebot.adapters.qq.event import GroupMessageCreateEvent, GroupAtMessageCreateEvent
 from nonebot.log import logger
 from nonebot.params import CommandArg
 
@@ -9,6 +10,16 @@ from ..games.fanfan import FanFan
 from ..utils import at_user, input_link
 
 logger.opt(colors=True).info("<green>✅ littlegames_main 插件加载成功！</green>")
+
+
+def _build_uid(event: Event, uid: str) -> str:
+    group_id = "0"
+    if isinstance(event, GroupMessageCreateEvent):
+        group_id = event.group_id
+    elif isinstance(event, GroupAtMessageCreateEvent):
+        group_id = event.group_id
+    return f"{group_id}_{uid}"
+
 
 fanfan_games: dict[str, FanFan] = {}
 
@@ -21,12 +32,12 @@ async def _handle_fanfan_start(event: Event, args=CommandArg()):
     uid2: str | None = None
     for arg in args:
         if isinstance(arg, MentionUser):
-            uid2 = arg.data["user_id"]
+            uid2 = _build_uid(event, arg.data["user_id"])
             break
     if uid2 is None:
         await _fanfan_start_cmd.finish("命令格式：\n/象棋翻翻棋 @对手")
         return
-    uid1 = event.get_user_id()
+    uid1 = _build_uid(event, event.get_user_id())
     if uid1 == uid2:
         await _fanfan_start_cmd.finish("你不能和自己玩")
         return
@@ -54,7 +65,7 @@ _fanfan_fan_cmd = on_command("翻开", priority=10, block=True)
 
 @_fanfan_fan_cmd.handle()
 async def _handle_fanfan_fan(event: Event, args=CommandArg()):
-    uid = event.get_user_id()
+    uid = _build_uid(event, event.get_user_id())
     game = fanfan_games.get(uid)
     if game is None:
         await _fanfan_fan_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
@@ -97,7 +108,7 @@ _fanfan_move_format = "命令格式：\n/移动 起始行号 起始列号 上/�
 
 @_fanfan_move_cmd.handle()
 async def _handle_fanfan_move(event: Event, args=CommandArg()):
-    uid = event.get_user_id()
+    uid = _build_uid(event, event.get_user_id())
     game = fanfan_games.get(uid)
     if game is None:
         await _fanfan_move_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
@@ -154,7 +165,7 @@ __fanfan_end_cmd = on_command("结束游戏", force_whitespace=True, priority=10
 
 @__fanfan_end_cmd.handle()
 async def _handle_fanfan_end(event: Event):
-    uid = event.get_user_id()
+    uid = _build_uid(event, event.get_user_id())
     game = fanfan_games.get(uid)
     if game is None:
         await __fanfan_end_cmd.finish("你还没有开始游戏，请先使用命令：\n象棋翻翻棋 @对手")
